@@ -1,0 +1,29 @@
+{
+  "name": "slack-rss-html-parser",
+  "version": "2.0.0",
+  "description": "Extract RSS feed configurations from Slack RSS app settings HTML",
+  "main": "dist/parse.js",
+  "type": "module",
+  "scripts": {
+    "start": "bun run src/index.ts",
+    "parse": "bun run src/commands/parse.ts",
+    "build": "bun build src/commands/parse.ts --outdir ./dist --target node",
+    "typecheck": "tsc --noEmit",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "lint": "eslint src/**/*.ts"
+  },
+  "keywords": ["slack", "rss", "html", "parser", "export", "opml"],
+  "author": "Akihisa Koyama",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.0.0",
+    "prettier": "^3.0.0",
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "dotenv": "^16.0.0"
+  }
+}
