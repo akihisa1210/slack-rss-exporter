@@ -1,6 +1,6 @@
 import { promises as fs } from 'fs';
 import { join } from 'path';
-import type { ChannelRSSInfo, ExtendedExport, ExportMetadata } from '../types/index.js';
+import type { ChannelRSSInfo } from '../types/index.js';
 import { CONFIG } from '../config/config.js';
 
 export class Exporter {
@@ -10,16 +10,7 @@ export class Exporter {
     const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
     const filename = `slack-rss-export-${timestamp}`;
 
-    switch (CONFIG.output.format) {
-      case 'json':
-        return this.exportJSON(data, filename);
-      case 'csv':
-        return this.exportCSV(data, filename);
-      case 'opml':
-        return this.exportOPML(data, filename);
-      default:
-        throw new Error(`Unsupported export format: ${CONFIG.output.format}`);
-    }
+    return this.exportOPML(data, filename);
   }
 
   private async ensureOutputDirectory(): Promise<void> {
@@ -30,48 +21,7 @@ export class Exporter {
     }
   }
 
-  private async exportJSON(data: ChannelRSSInfo[], filename: string): Promise<string> {
-    const filepath = join(CONFIG.output.dir, `${filename}.json`);
-    
-    const totalFeeds = data.reduce((sum, channel) => sum + channel.rssFeeds.length, 0);
-    const metadata: ExportMetadata = {
-      exportedAt: new Date().toISOString(),
-      exportVersion: '1.0.0',
-      totalChannels: data.length,
-      totalFeeds,
-      exportFormat: 'json',
-    };
 
-    const extendedExport: ExtendedExport = {
-      metadata,
-      channels: data,
-    };
-
-    const content = JSON.stringify(extendedExport, null, 2);
-    await fs.writeFile(filepath, content, 'utf-8');
-    return filepath;
-  }
-
-  private async exportCSV(data: ChannelRSSInfo[], filename: string): Promise<string> {
-    const filepath = join(CONFIG.output.dir, `${filename}.csv`);
-    
-    const rows = ['Channel ID,Channel Name,RSS URL'];
-    
-    for (const channel of data) {
-      for (const feed of channel.rssFeeds) {
-        const row = [
-          this.escapeCSV(channel.channelId),
-          this.escapeCSV(channel.channelName),
-          this.escapeCSV(feed.url),
-        ].join(',');
-        rows.push(row);
-      }
-    }
-
-    const content = rows.join('\n');
-    await fs.writeFile(filepath, content, 'utf-8');
-    return filepath;
-  }
 
   private async exportOPML(data: ChannelRSSInfo[], filename: string): Promise<string> {
     const filepath = join(CONFIG.output.dir, `${filename}.opml`);
@@ -117,10 +67,4 @@ ${outline}
       .replace(/'/g, '&apos;');
   }
 
-  private escapeCSV(value: string): string {
-    if (value.includes(',') || value.includes('"') || value.includes('\n')) {
-      return `"${value.replace(/"/g, '""')}"`;
-    }
-    return value;
-  }
 }

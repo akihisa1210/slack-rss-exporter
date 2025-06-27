@@ -1,46 +1,20 @@
 #!/usr/bin/env bun
 
-import { validateConfig } from './config/config.js';
-import { SlackClient } from './slack/client.js';
-import { RSSScanner } from './rss/scanner.js';
-import { Exporter } from './utils/exporter.js';
+console.log('Slack RSS HTML Parser');
+console.log('=====================\n');
 
-async function main() {
-  try {
-    console.log('Slack RSS Exporter');
-    console.log('==================\n');
+console.log('This tool has been converted to HTML-only parsing.');
+console.log('Please use the parse command instead:\n');
 
-    // Validate configuration
-    validateConfig();
+console.log('Usage:');
+console.log('  bun run parse <path-to-html-file>');
+console.log('  npm run parse <path-to-html-file>\n');
 
-    // Initialize components
-    const slackClient = new SlackClient();
-    const scanner = new RSSScanner(slackClient);
-    const exporter = new Exporter();
+console.log('Instructions:');
+console.log('1. Go to your Slack RSS app settings page in browser');
+console.log('2. Right-click and select "View Page Source" or "Inspect Element"');
+console.log('3. Find the <div id="feeds"> section containing all RSS feeds');
+console.log('4. Copy the HTML content and save it to a file');
+console.log('5. Run: bun run parse your-file.html\n');
 
-    // Scan all channels for RSS feeds
-    const results = await scanner.scanAllChannels();
-
-    if (results.length === 0) {
-      console.log('\nNo RSS feeds found in any channels.');
-      return;
-    }
-
-    // Export results
-    const outputPath = await exporter.export(results);
-    console.log(`\nResults exported to: ${outputPath}`);
-
-    // Print summary
-    const totalFeeds = results.reduce((sum, channel) => sum + channel.rssFeeds.length, 0);
-    console.log(`\nSummary:`);
-    console.log(`- Channels with RSS feeds: ${results.length}`);
-    console.log(`- Total RSS feeds found: ${totalFeeds}`);
-
-  } catch (error) {
-    console.error('\nError:', error instanceof Error ? error.message : error);
-    process.exit(1);
-  }
-}
-
-// Run the main function
-await main();
+console.log('For more details, see README-HTML-IMPORT.md');

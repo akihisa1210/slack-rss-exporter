@@ -1,18 +1,18 @@
 {
-  "name": "slack-rss-exporter",
-  "version": "1.0.0",
-  "description": "Export RSS feed configurations from all Slack channels",
-  "main": "dist/index.js",
+  "name": "slack-rss-html-parser",
+  "version": "2.0.0",
+  "description": "Extract RSS feed configurations from Slack RSS app settings HTML",
+  "main": "dist/parse.js",
   "type": "module",
   "scripts": {
     "start": "bun run src/index.ts",
-    "build": "bun build src/index.ts --outdir ./dist --target node",
-    "dev": "bun run --watch src/index.ts",
+    "parse": "bun run src/commands/parse.ts",
+    "build": "bun build src/commands/parse.ts --outdir ./dist --target node",
     "typecheck": "tsc --noEmit",
     "format": "prettier --write \"src/**/*.ts\"",
     "lint": "eslint src/**/*.ts"
   },
-  "keywords": ["slack", "rss", "export"],
+  "keywords": ["slack", "rss", "html", "parser", "export", "opml"],
   "author": "Akihisa Koyama",
   "license": "MIT",
   "devDependencies": {
@@ -24,7 +24,6 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
-    "@slack/web-api": "^7.0.0",
     "dotenv": "^16.0.0"
   }
 }
