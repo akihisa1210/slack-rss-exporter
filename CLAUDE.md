@@ -4,51 +4,51 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a Slack RSS Exporter project that aims to export Slack data to RSS format. The project is currently in its initial stage with no implementation yet.
+This is a Slack RSS HTML Parser that extracts RSS feed configurations from Slack's RSS app settings page HTML and exports them to OPML format for easy migration to other RSS readers.
 
-## Development Setup
-
-Since the project is not yet implemented, the following are suggested conventions based on the project name and common practices for Node.js projects:
-
-### Suggested Project Structure
+## Current Project Structure
 ```
 slack-rss-exporter/
 ├── src/
-│   ├── index.js        # Main entry point
-│   ├── slack/          # Slack API integration
-│   ├── rss/            # RSS generation logic
-│   └── utils/          # Utility functions
-├── tests/              # Test files
-├── package.json        # Node.js project configuration
-└── .env.example        # Environment variables template
+│   ├── index.ts                # Entry point (help message)
+│   ├── commands/
+│   │   └── parse.ts            # Main parsing command
+│   ├── parser/
+│   │   └── html-parser.ts      # HTML parsing logic
+│   ├── utils/
+│   │   └── exporter.ts         # OPML export functionality
+│   ├── types/
+│   │   └── index.ts            # Type definitions
+│   └── config/
+│       └── config.ts           # Configuration
+├── output/                     # Generated exports
+├── package.json                # Bun/TypeScript project configuration
+└── README.md                   # Documentation
 ```
 
 ### Environment Variables
-When implementing, ensure to use environment variables for:
-- Slack API tokens
-- Slack workspace ID
-- RSS feed configuration
+The project uses minimal environment variables:
+- `OUTPUT_DIR`: Directory for generated OPML exports (default: ./output)
 
-## Architecture Considerations
+## Architecture
 
-### Slack Integration
-- Use the official Slack SDK (@slack/web-api) for API interactions
-- Implement proper authentication and error handling
-- Consider rate limiting when fetching messages
+### HTML Parsing
+- Parses Slack RSS app settings page HTML using regex patterns
+- Extracts RSS feed URLs, titles, and associated channel names
+- No API calls or authentication required
 
-### RSS Generation
-- Follow RSS 2.0 specification
-- Include proper XML encoding for special characters
-- Consider using an RSS library for Node.js
+### Data Export
+- Exports to OPML format for RSS reader compatibility
+- Generates timestamped files in the output directory
+- Proper XML escaping for special characters
 
 ### Data Flow
-1. Authenticate with Slack API
-2. Fetch messages from specified channels
-3. Transform Slack messages to RSS items
-4. Generate valid RSS XML
-5. Serve or save the RSS feed
+1. Read HTML file containing Slack RSS settings
+2. Parse HTML using regex to extract feed information
+3. Convert to structured data format
+4. Export as OPML file for RSS reader import
 
 ## Security Notes
-- Never commit Slack tokens or sensitive credentials
-- Use environment variables for all sensitive configuration
-- Validate and sanitize all data from Slack before including in RSS
+- No sensitive credentials required
+- All data processing is local
+- HTML content should be validated before processing
