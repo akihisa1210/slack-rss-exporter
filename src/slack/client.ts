@@ -68,7 +68,11 @@ export class SlackClient {
 
         cursor = response.response_metadata?.next_cursor;
       } while (cursor);
-    } catch (error) {
+    } catch (error: any) {
+      if (error?.data?.error === 'not_in_channel') {
+        // Botがチャンネルに参加していない場合はスキップ
+        return [];
+      }
       console.error(`Error fetching messages for channel ${channelId}:`, error);
     }
 

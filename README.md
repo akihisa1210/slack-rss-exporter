@@ -48,13 +48,28 @@ SLACK_BOT_TOKEN=xoxb-your-token-here
 4. ワークスペースにアプリをインストール
 5. Bot User OAuth Tokenをコピー
 
+## Botをチャンネルに招待
+
+**重要**: BotはRSS情報を取得したい各チャンネルに招待されている必要があります。
+
+### 方法1: 個別に招待
+1. Slackで各チャンネルに移動
+2. `/invite @<bot-name>` コマンドを実行
+3. または、チャンネル設定から「メンバーを追加」でBotを追加
+
+### 方法2: 全チャンネルに一括招待（管理者のみ）
+1. Slackワークスペースの管理者設定からBotを全チャンネルに追加
+2. または、Slack APIで `conversations.invite` を使用してプログラマティックに招待
+
 ## 使い方
 
 ```bash
 bun run start
 ```
 
-実行すると、すべてのチャンネルをスキャンし、RSS情報を`output`ディレクトリにエクスポートします。
+実行すると、Botが参加しているすべてのチャンネルをスキャンし、RSS情報を`output`ディレクトリにエクスポートします。
+
+**注意**: Botがチャンネルに参加していない場合、そのチャンネルはRSSスキャンがスキップされます。
 
 ## 設定
 
@@ -63,6 +78,14 @@ bun run start
 - `SLACK_BOT_TOKEN`: Slack Bot Token（必須）
 - `OUTPUT_DIR`: 出力ディレクトリ（デフォルト: `./output`）
 - `EXPORT_FORMAT`: エクスポート形式（`json`、`csv`、または `opml`、デフォルト: `json`）
+
+### レートリミット対策設定（オプション）
+
+- `SLACK_REQUEST_DELAY`: リクエスト間の初期遅延時間（ミリ秒、デフォルト: 1000）
+- `SLACK_MAX_REQUEST_DELAY`: レートリミット時の最大遅延時間（ミリ秒、デフォルト: 60000）
+- `SLACK_RATE_LIMIT_RETRIES`: レートリミット時のリトライ回数（デフォルト: 3）
+
+レートリミットエラーが頻発する場合は、`SLACK_REQUEST_DELAY`を増やしてください（例: 2000-3000）。
 
 ## 出力形式
 
